@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>生涯规划助手</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ====== 欢迎页 ====== -->
+<section id="page-landing" class="page active">
+  <div class="landing-hero">
+    <div class="hero-shapes"><span class="shape s1"></span><span class="shape s2"></span><span class="shape s3"></span></div>
+    <div class="hero-center">
+      <span class="hero-emoji">🎯</span>
+      <span class="hero-brand">生涯规划助手</span>
+      <span class="hero-title">霍兰德职业兴趣测评</span>
+      <span class="hero-desc">第 1 步 · 了解你的职业倾向</span>
+    </div>
+  </div>
+  <div class="landing-info">
+    <div class="info-card"><span class="ic-num">36</span><span class="ic-label">道精选题目</span></div>
+    <div class="info-card"><span class="ic-num">5</span><span class="ic-label">分钟快速完成</span></div>
+    <div class="info-card"><span class="ic-num">6</span><span class="ic-label">大兴趣维度</span></div>
+  </div>
+  <div class="landing-desc">
+    <span class="ld-title">📋 测试说明</span>
+    <span class="ld-text">本测评包含 36 道题目，从 6 个维度分析你的职业兴趣倾向。每题根据你的符合程度选择，答题进度会自动保存。</span>
+  </div>
+  <div class="gender-select">
+    <span class="gs-label">请选择你的性别（影响职业推荐准确度）</span>
+    <div class="gs-options">
+      <div class="gs-opt" data-gender="male" onclick="App.selectGender('male',this)"><span class="gs-icon">👦</span><span class="gs-text">男生</span></div>
+      <div class="gs-opt" data-gender="female" onclick="App.selectGender('female',this)"><span class="gs-icon">👧</span><span class="gs-text">女生</span></div>
+    </div>
+  </div>
+  <div class="gender-select">
+    <span class="gs-label">你目前的选科状态是？</span>
+    <div class="gs-options">
+      <div class="gs-opt" data-entry="before" onclick="App.selectEntry('before',this)"><span class="gs-icon">🤔</span><span class="gs-text">我还没选科</span></div>
+      <div class="gs-opt" data-entry="after" onclick="App.selectEntry('after',this)"><span class="gs-icon">📚</span><span class="gs-text">我已经选科了</span></div>
+    </div>
+  </div>
+  <div class="landing-actions">
+    <button class="btn-confirm btn-block" id="start-btn" onclick="App.startJourney()">开始测评 →</button>
+    <span class="landing-tip" id="start-tip">请先选择性别和选科状态</span>
+  </div>
+  <div class="disclaimer">本测评基于通用心理学理论设计，仅供学生自我认知与生涯规划参考，不构成专业心理诊断或临床建议。</div>
+</section>
+
+<!-- ====== 霍兰德测试 ====== -->
+<section id="page-holland-test" class="page">
+  <div class="test-page">
+    <div class="progress-section">
+      <div class="progress-wrap"><div class="progress-header flex-between"><span class="progress-label">霍兰德职业兴趣测评</span><span class="progress-count" id="h-progress-text">0 / 36</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" id="h-progress-bar"></div></div></div>
+    </div>
+    <div class="question-section" id="h-question-area"></div>
+    <div class="bottom-actions">
+      <div class="action-row">
+        <button class="btn-outline btn-half" id="h-prev-btn" onclick="App.hollandTest.prev()">上一题</button>
+        <button class="btn-primary btn-half" id="h-next-btn" onclick="App.hollandTest.next()">下一题</button>
+        <button class="btn-confirm btn-half" id="h-submit-btn" onclick="App.hollandTest.submit()" style="display:none">提交测评</button>
+      </div>
+      <div class="skip-hint" id="h-skip-hint"><span>点击"下一题"自动保存进度</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== 校园性格测试 ====== -->
+<section id="page-mbti-test" class="page">
+  <div class="test-page">
+    <div class="progress-section">
+      <div class="progress-wrap"><div class="progress-header flex-between"><span class="progress-label">校园性格测评</span><span class="progress-count" id="m-progress-text">0 / 28</span></div><div class="progress-bar-bg"><div class="progress-bar-fill" id="m-progress-bar"></div></div></div>
+    </div>
+    <div class="question-section" id="m-question-area"></div>
+    <div class="bottom-actions">
+      <div class="action-row">
+        <button class="btn-outline btn-half" id="m-prev-btn" onclick="App.mbtiTest.prev()">上一题</button>
+        <button class="btn-primary btn-half" id="m-next-btn" onclick="App.mbtiTest.next()">下一题</button>
+        <button class="btn-confirm btn-half" id="m-submit-btn" onclick="App.mbtiTest.submit()" style="display:none">提交测评</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== 测试结果 ====== -->
+<section id="page-test-result" class="page">
+  <div class="type-hero-card" id="result-hero"></div>
+  <div class="card card-elevated block">
+    <div class="section-header flex-between"><span class="section-title">🎯 霍兰德职业兴趣</span><span class="holland-code-badge"><span class="code-text" id="res-holland-code"></span></span></div>
+    <div class="hex-rings" id="hex-rings"></div>
+    <div class="score-bars" id="h-score-bars"></div>
+    <div class="type-desc" id="h-type-desc"></div>
+  </div>
+  <div class="card card-elevated block">
+    <div class="section-header flex-between"><span class="section-title">🧠 校园性格类型</span><span class="mbti-type-badge"><span class="type-text" id="res-mbti-code"></span><span class="type-name" id="res-mbti-name"></span></span></div>
+    <div class="dimension-bars" id="mbti-dim-bars"></div>
+    <div class="traits-section" id="mbti-traits"></div>
+    <div class="desc-text" id="mbti-learning"></div>
+  </div>
+  <div class="result-footer"><button class="btn-primary btn-block" onclick="App.navigateTo('career-recommend')">查看推荐职业 →</button><span class="footer-hint">基于性格+兴趣综合匹配，推荐适配职业方向</span></div>
+</section>
+
+<!-- ====== 职业推荐 ====== -->
+<section id="page-career-recommend" class="page">
+  <div class="page-header"><span class="page-header-title">你的适配职业方向</span><span class="page-header-sub" id="career-header-sub"></span></div>
+  <div class="careers-list" id="career-list"></div>
+  <div class="footer" id="career-footer" style="display:none"><button class="btn-confirm btn-block" onclick="App.confirmCareer()">确认职业，继续 →</button><span class="footer-hint" id="career-footer-text"></span></div>
+</section>
+
+<!-- ====== 选科推荐 ====== -->
+<section id="page-subject-choice" class="page">
+  <div class="page-header"><span class="page-header-title">选科分析</span><span class="page-header-sub">全科成绩 + 兴趣 + 意愿综合分析</span></div>
+  <div id="subject-combo-area"></div>
+  <div id="subject-analysis-area" style="display:none"></div>
+</section>
+
+<!-- ====== 分数输入 ====== -->
+<section id="page-score-input" class="page">
+  <div class="page-header"><span class="page-header-title">输入模考成绩</span><span class="page-header-sub">自动算总分，精准匹配目标院校</span></div>
+  <div class="card card-elevated"><span class="section-label">📍 所在省份</span><div class="form-row"><div class="form-half"><select id="si-province" class="si-select" onchange="App.onProvinceChange()"></select></div><div class="form-half"><select id="si-city" class="si-select" onchange="App.onCityChange()"></select></div></div></div>
+  <div class="card card-elevated"><span class="section-label">🎯 意向就读省份（可多选）</span><div class="pref-province-grid" id="pref-province-grid"></div><span class="pp-count" id="pp-count-text" style="display:none"></span></div>
+  <div class="total-score-card"><span class="total-label">📊 总分（自动计算）</span><div class="total-score-display"><span class="total-number" id="si-total">0</span><span class="total-unit">/ 750</span></div></div>
+  <div class="card card-elevated"><span class="section-label">📋 选考科目（选3门）</span><span class="section-hint">语数英必考，勾选3门选考科目</span><div class="elective-grid" id="elective-grid"></div><span class="el-count" id="el-count-text">已选 0 / 3 科</span></div>
+  <div class="card card-elevated"><span class="section-label">各科成绩</span><div class="subject-grid" id="si-subject-grid"></div></div>
+  <div class="card card-elevated"><span class="form-label">省排名（选填）</span><input class="si-input" type="number" id="si-ranking" placeholder="如不清楚可不填"></div>
+  <div class="footer"><button class="btn-confirm btn-block" onclick="App.startMatch()">开始匹配院校 →</button></div>
+</section>
+
+<!-- ====== 院校匹配 ====== -->
+<section id="page-school-match" class="page">
+  <div class="page-header"><span class="page-header-title">院校匹配结果</span><span class="page-header-sub" id="sm-subtitle"></span></div>
+  <div id="school-match-content"></div>
+  <div class="data-notice"><span class="dn-title">📢 数据使用声明</span><span class="dn-text">院校投档线数据仅供生涯规划参考。实际录取分数线每年变化，具体请以当年省教育考试院官方公布为准。</span></div>
+  <div class="footer"><button class="btn-confirm btn-block" onclick="App.navigateTo('report')">生成完整报告 →</button><span class="archive-link mt-16" onclick="App.navigateTo('archive')">📁 查看生涯档案</span></div>
+</section>
+
+<!-- ====== 分差分析 ====== -->
+<section id="page-gap-analysis" class="page">
+  <div class="page-header"><span class="page-header-title">分差与学习分析</span><span class="page-header-sub">精准定位薄弱学科，制定提分策略</span></div>
+  <div id="gap-content"></div>
+  <div class="card promotion-card" id="gap-encourage" style="display:none"><span class="promo-icon">💪</span><span class="promo-title" id="gap-encourage-title"></span><span class="promo-desc">重点突破薄弱学科，合理分配学习时间，持续努力一定能达成目标。</span></div>
+  <div class="footer"><button class="btn-outline btn-block" onclick="App.navigateTo('report')">生成完整测评报告</button></div>
+</section>
+
+<!-- ====== 测评报告 ====== -->
+<section id="page-report" class="page">
+  <div class="page-header"><span class="page-header-title">📋 生涯规划测评报告</span><span class="page-header-sub">校园性格分析 + 霍兰德职业兴趣 · 综合报告</span></div>
+  <div id="report-content"></div>
+  <div class="disclaimer">本测评基于通用心理学理论设计，仅供学生自我认知与生涯规划参考，不构成专业心理诊断或临床建议。</div>
+  <div class="fixed-bottom"><button class="btn-confirm btn-block" onclick="App.saveReport()">📥 保存报告图片</button><div class="bottom-links"><span class="link-item" onclick="App.navigateTo('archive')">📁 一生一档</span><span class="link-item" onclick="App.navigateTo('home')">🏠 返回首页</span></div></div>
+  <canvas id="report-canvas" style="display:none"></canvas>
+</section>
+
+<!-- ====== 学生档案 ====== -->
+<section id="page-student-archive" class="page">
+  <div class="page-header"><span class="page-header-title">📁 个人生涯档案</span><span class="page-header-sub">一生一档 · 数据汇总</span></div>
+  <div id="archive-content"></div>
+</section>
+
+<!-- ====== 首页 ====== -->
+<section id="page-home" class="page">
+  <div class="home-hero"><div class="hero-shapes"><span class="hs hs1"></span><span class="hs hs2"></span><span class="hs hs3"></span></div><div class="hero-inner"><span class="hero-emoji">🎓</span><span class="hero-brand">生涯规划助手</span><span class="hero-slogan">找准方向，每一步都算数</span></div></div>
+  <div class="quick-actions">
+    <div class="qa-card" onclick="App.navigateTo('landing')"><div class="qa-icon-wrap qa-icon-test"><span class="qa-icon">🎯</span></div><span class="qa-title">开始测评</span><span class="qa-desc">霍兰德兴趣 + 校园性格分析</span></div>
+    <div class="qa-card" onclick="App.navigateTo('career-recommend')"><div class="qa-icon-wrap qa-icon-career"><span class="qa-icon">💼</span></div><span class="qa-title">职业推荐</span><span class="qa-desc">匹配最适合的职业方向</span></div>
+    <div class="qa-card" onclick="App.navigateTo('score-input')"><div class="qa-icon-wrap qa-icon-score"><span class="qa-icon">📊</span></div><span class="qa-title">院校匹配</span><span class="qa-desc">输入成绩匹配目标大学</span></div>
+    <div class="qa-card" onclick="App.navigateTo('archive')"><div class="qa-icon-wrap qa-icon-archive"><span class="qa-icon">📁</span></div><span class="qa-title">一生一档</span><span class="qa-desc">个人生涯档案汇总</span></div>
+  </div>
+  <div class="disclaimer mt-32">院校投档线数据仅供参考，实际录取分数线每年变化，请以各省教育考试院官方公布为准。</div>
+</section>
+
+<!-- ====== Toast/Modal ====== -->
+<div id="toast" class="toast"></div>
+<div id="modal-overlay" class="modal-overlay" style="display:none" onclick="App.closeModal()"><div class="modal-box" onclick="event.stopPropagation()"><div class="modal-title" id="modal-title"></div><div class="modal-body" id="modal-body"></div><div class="modal-btns" id="modal-btns"></div></div></div>
+
+<!-- 底部导航 -->
+<nav class="bottom-nav" id="bottom-nav" style="display:none">
+  <div class="nav-item" onclick="App.navigateTo('home')"><span class="nav-icon">🏠</span><span class="nav-label">首页</span></div>
+  <div class="nav-item" onclick="App.navigateTo('landing')"><span class="nav-icon">🎯</span><span class="nav-label">测评</span></div>
+  <div class="nav-item" onclick="App.navigateTo('archive')"><span class="nav-icon">📁</span><span class="nav-label">档案</span></div>
+</nav>
+
+<!-- ====== JS ====== -->
+
+<script src="js/bundle.js"></script>
+</body>
+</html>
