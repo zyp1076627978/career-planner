@@ -2167,6 +2167,8 @@ function closeModal() { document.getElementById('modal-overlay').style.display =
 
 // ========== Router ==========
 function navigateTo(page) {
+  var overlay = document.getElementById('loading-overlay');
+  if (overlay) { overlay.style.display = 'none'; }
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   var el = document.getElementById('page-' + page);
   if (el) el.classList.add('active');
