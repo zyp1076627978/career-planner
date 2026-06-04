@@ -44,8 +44,8 @@ function navigateTo(page) {
   var nav = document.getElementById('bottom-nav');
   var navPages = ['home','landing','archive'];
   var showNav = navPages.indexOf(page) >= 0;
-  nav.style.display = showNav ? 'flex' : 'none';
-  document.body.style.paddingBottom = showNav ? '70px' : '0';
+  if (showNav) { nav.style.display = 'flex'; document.body.className = 'body-has-nav'; }
+  else { nav.style.display = 'none'; document.body.className = ''; }
   // Page init
   if (page === 'test-result') renderTestResult();
   if (page === 'career-recommend') renderCareerRecommend();
